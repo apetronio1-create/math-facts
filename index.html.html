@@ -1,0 +1,2079 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Facts Practice Game</title>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded MT Bold', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .container {
+      width: 98%;
+      max-width: 800px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      padding: 16px;
+      margin: 10px auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      color: #667eea;
+      font-size: 28px;
+      margin: 0 0 8px 0;
+    }
+
+    .header p {
+      color: #666;
+      font-size: 16px;
+      margin: 0;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .welcome-card {
+      text-align: center;
+      padding: 24px 16px;
+    }
+
+    .welcome-card h2 {
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+
+    .student-input {
+      width: 100%;
+      max-width: 400px;
+      padding: 16px 24px;
+      font-size: 20px;
+      border: 3px solid #667eea;
+      border-radius: 12px;
+      margin: 24px auto;
+      display: block;
+      text-align: center;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin: 4px;
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(102,126,234,0.3);
+    }
+
+    .btn-secondary {
+      background: #48bb78;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #38a169;
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background: #f56565;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #e53e3e;
+    }
+
+    .btn-warning {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .btn-warning:hover {
+      background: #d97706;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .student-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .student-card {
+      background: #f7fafc;
+      border: 3px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .student-card:hover {
+      border-color: #667eea;
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    .student-card h3 {
+      color: #333;
+      margin: 0 0 8px 0;
+      font-size: 24px;
+    }
+
+    .student-card p {
+      color: #666;
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .category-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 12px;
+      padding: 20px 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+      border: 3px solid transparent;
+    }
+
+    .category-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 24px rgba(102,126,234,0.4);
+      border-color: #ffd700;
+    }
+
+    .category-card h3 {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+    }
+
+    .category-card p {
+      margin: 0;
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 12px;
+      background: #f7fafc;
+      border-radius: 8px;
+    }
+
+    .game-info {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .info-item {
+      text-align: center;
+    }
+
+    .info-label {
+      font-size: 10px;
+      color: #666;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .info-value {
+      font-size: 18px;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    .problem-area {
+      text-align: center;
+      padding: 24px 16px;
+      background: #f7fafc;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+
+    .problem-text {
+      font-size: 48px;
+      font-weight: bold;
+      color: #333;
+      margin: 16px 0;
+    }
+
+    .visual-aid {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+
+    .circle {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #667eea;
+      border: 2px solid #5568d3;
+    }
+
+    .number-pad {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 8px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .number-btn {
+      padding: 16px;
+      font-size: 24px;
+      font-weight: bold;
+      background: white;
+      border: 2px solid #667eea;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #667eea;
+    }
+
+    .number-btn:hover {
+      background: #667eea;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .number-btn:active {
+      transform: scale(0.95);
+    }
+
+    .feedback {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      font-size: 80px;
+      transition: all 0.3s;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .feedback.show {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .feedback.correct {
+      color: #48bb78;
+    }
+
+    .feedback.incorrect {
+      color: #f56565;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90%;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      color: #333;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 32px;
+      cursor: pointer;
+      color: #666;
+      padding: 0;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close-btn:hover {
+      color: #333;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 24px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 36px;
+      font-weight: bold;
+      margin: 8px 0;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .progress-section {
+      background: #f7fafc;
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+
+    .progress-section h3 {
+      color: #333;
+      margin: 0 0 16px 0;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .info-banner {
+      background: #e6fffa;
+      border: 2px solid #38b2ac;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .info-banner h3 {
+      color: #234e52;
+      margin: 0 0 8px 0;
+      font-size: 18px;
+    }
+
+    .info-banner p {
+      color: #2d3748;
+      margin: 0;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Math Facts Practice</h1>
+      <p>Let's practice math facts!</p>
+    </div>
+
+    <!-- Welcome Screen -->
+    <div id="welcomeScreen" class="screen active">
+      <div class="welcome-card">
+        <h2>Welcome! What's your name?</h2>
+        <input type="text" id="studentNameInput" class="student-input" placeholder="Enter your name" maxlength="50">
+        <div>
+          <button class="btn btn-primary" id="startBtn" disabled>Start Practicing</button>
+        </div>
+        <div style="margin-top: 32px;">
+          <button class="btn btn-secondary" id="selectStudentBtn">I've played before</button>
+          <button class="btn btn-secondary" id="teacherDashboardBtn">Teacher Dashboard</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student Selection Screen -->
+    <div id="studentSelectionScreen" class="screen">
+      <h2 style="text-align: center; color: #333;">Select Your Name</h2>
+      <div id="studentList" class="student-list"></div>
+      <div style="text-align: center; margin-top: 24px;">
+        <button class="btn btn-secondary" id="backToWelcomeBtn">Back</button>
+      </div>
+    </div>
+
+    <!-- Category Selection Screen -->
+    <div id="categoryScreen" class="screen">
+      <h2 style="text-align: center; color: #333; margin-bottom: 24px;">Choose a Category</h2>
+      <div id="categoryGrid" class="category-grid"></div>
+      <div style="text-align: center; margin-top: 24px;">
+        <button class="btn btn-secondary" id="viewProgressBtn">View My Progress</button>
+        <button class="btn btn-primary" id="practiceBtn">Practice Mode</button>
+        <button class="btn btn-danger" id="logoutBtn">Switch Student</button>
+      </div>
+    </div>
+
+    <!-- Practice Mode Screen -->
+    <div id="practiceModeScreen" class="screen">
+      <h2 style="text-align: center; color: #333; margin-bottom: 24px;">🎯 Practice Mode</h2>
+      <div class="info-banner">
+        <h3>Practice Facts You Haven't Mastered</h3>
+        <p>Practice mode helps you work on facts you've tried but haven't mastered yet. Your practice won't count toward mastery - it's just for extra help!</p>
+      </div>
+      <div id="practiceFactsList"></div>
+      <div style="text-align: center; margin-top: 24px;">
+        <button class="btn btn-secondary" id="backFromPracticeBtn">Back to Categories</button>
+      </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="screen">
+      <div class="game-header">
+        <div class="game-info">
+          <div class="info-item">
+            <div class="info-label">Score</div>
+            <div class="info-value" id="scoreDisplay">0/0</div>
+          </div>
+        </div>
+        <button class="btn btn-danger" id="endGameBtn">End Practice</button>
+      </div>
+      <div class="problem-area">
+        <div id="visualAid" class="visual-aid"></div>
+        <div class="problem-text" id="problemDisplay">5 + 3 = ?</div>
+      </div>
+      <div class="number-pad" id="numberPad"></div>
+    </div>
+
+    <!-- Teacher Dashboard Screen -->
+    <div id="dashboardScreen" class="screen">
+      <div style="display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;">
+        <button class="btn btn-secondary" id="backFromDashboardBtn">Back to Game</button>
+        <button class="btn btn-warning" id="exportDataBtn">📥 Export Data</button>
+        <button class="btn btn-warning" id="importDataBtn">📤 Import Data</button>
+        <button class="btn btn-danger" id="clearAllDataBtn">Clear All Data</button>
+      </div>
+      <input type="file" id="importFileInput" accept=".json" style="display: none;">
+      
+      <h2 style="text-align: center; color: #333;">Teacher Dashboard</h2>
+      <div class="info-banner">
+        <h3>📊 Local Storage Active</h3>
+        <p>Student progress saves in the browser and persists when tabs close. Use Export to backup data or transfer to another computer!</p>
+      </div>
+      <div id="dashboardContent"></div>
+    </div>
+
+    <!-- Progress Modal -->
+    <div id="progressModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>My Progress</h2>
+          <button class="close-btn" id="closeProgressModal">×</button>
+        </div>
+        <div id="progressContent"></div>
+      </div>
+    </div>
+
+    <!-- Category Detail Modal -->
+    <div id="categoryDetailModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="categoryDetailTitle">Category Progress</h2>
+          <button class="close-btn" id="closeCategoryDetailModal">×</button>
+        </div>
+        <div id="categoryDetailContent"></div>
+      </div>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'mathFactsData';
+    let allData = [];
+    let currentStudent = null;
+    let currentCategory = null;
+    let currentFacts = [];
+    let currentFactIndex = 0;
+    let sessionId = null;
+    let correctCount = 0;
+    let totalCount = 0;
+    let isPracticeMode = false;
+    let questionStartTime = null;
+
+    const MASTERY_TIME_THRESHOLD = 5000;
+
+    // Load data from localStorage
+    function loadData() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          allData = JSON.parse(stored);
+        } catch (e) {
+          allData = [];
+        }
+      }
+    }
+
+    // Save data to localStorage
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(allData));
+    }
+
+    // Export data as downloadable file
+    function exportData() {
+      const dataStr = JSON.stringify(allData, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `math-facts-data-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      alert('✅ Data exported successfully!\n\nYou can import this file on another computer to transfer all student progress.');
+    }
+
+    // Import data from file
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const importedData = JSON.parse(e.target.result);
+          
+          if (confirm(`Import ${importedData.length} records?\n\nThis will ADD to existing data (not replace it).`)) {
+            allData = [...allData, ...importedData];
+            saveData();
+            alert('✅ Data imported successfully!');
+            showDashboard();
+          }
+        } catch (error) {
+          alert('❌ Error importing file. Make sure it\'s a valid export file.');
+        }
+      };
+      reader.readAsText(file);
+      
+      // Reset file input
+      event.target.value = '';
+    }
+
+    // Generate zero facts
+    function generateZeroFacts() {
+      const facts = [];
+      for (let i = 1; i <= 10; i++) {
+        facts.push({ problem: `${i} + 0 = ?`, answer: i });
+        facts.push({ problem: `0 + ${i} = ?`, answer: i });
+        facts.push({ problem: `${i} - 0 = ?`, answer: i });
+        facts.push({ problem: `${i} - ${i} = ?`, answer: 0 });
+      }
+      const shuffled = facts.sort(() => Math.random() - 0.5);
+      return shuffled.slice(0, 20);
+    }
+
+    const mathFactsCategories = {
+      'zero_facts': {
+        name: 'Zero Facts',
+        description: 'Adding and subtracting zero',
+        facts: generateZeroFacts()
+      },
+      'partners_5': {
+        name: 'Partners of 5',
+        description: 'Number pairs that make 5',
+        facts: [
+          { problem: '2 + 3 = ?', answer: 5 },
+          { problem: '3 + 2 = ?', answer: 5 },
+          { problem: '4 + 1 = ?', answer: 5 },
+          { problem: '1 + 4 = ?', answer: 5 },
+          { problem: '5 - 2 = ?', answer: 3 },
+          { problem: '5 - 3 = ?', answer: 2 },
+          { problem: '5 - 1 = ?', answer: 4 },
+          { problem: '5 - 4 = ?', answer: 1 }
+        ]
+      },
+      'facts_with_5': {
+        name: 'Facts with 5',
+        description: 'Adding and subtracting with 5',
+        facts: [
+          { problem: '5 + 1 = ?', answer: 6 },
+          { problem: '1 + 5 = ?', answer: 6 },
+          { problem: '5 + 2 = ?', answer: 7 },
+          { problem: '2 + 5 = ?', answer: 7 },
+          { problem: '5 + 3 = ?', answer: 8 },
+          { problem: '3 + 5 = ?', answer: 8 },
+          { problem: '5 + 4 = ?', answer: 9 },
+          { problem: '4 + 5 = ?', answer: 9 },
+          { problem: '5 + 5 = ?', answer: 10 },
+          { problem: '6 - 1 = ?', answer: 5 },
+          { problem: '6 - 5 = ?', answer: 1 },
+          { problem: '7 - 5 = ?', answer: 2 },
+          { problem: '7 - 2 = ?', answer: 5 },
+          { problem: '8 - 3 = ?', answer: 5 },
+          { problem: '8 - 5 = ?', answer: 3 },
+          { problem: '9 - 5 = ?', answer: 4 },
+          { problem: '9 - 4 = ?', answer: 5 }
+        ]
+      },
+      'partners_10': {
+        name: 'Partners of 10',
+        description: 'Number pairs that make 10',
+        facts: [
+          { problem: '1 + 9 = ?', answer: 10 },
+          { problem: '9 + 1 = ?', answer: 10 },
+          { problem: '2 + 8 = ?', answer: 10 },
+          { problem: '8 + 2 = ?', answer: 10 },
+          { problem: '3 + 7 = ?', answer: 10 },
+          { problem: '7 + 3 = ?', answer: 10 },
+          { problem: '4 + 6 = ?', answer: 10 },
+          { problem: '6 + 4 = ?', answer: 10 },
+          { problem: '5 + 5 = ?', answer: 10 },
+          { problem: '10 - 1 = ?', answer: 9 },
+          { problem: '10 - 9 = ?', answer: 1 },
+          { problem: '10 - 2 = ?', answer: 8 },
+          { problem: '10 - 8 = ?', answer: 2 },
+          { problem: '10 - 7 = ?', answer: 3 },
+          { problem: '10 - 3 = ?', answer: 7 },
+          { problem: '10 - 4 = ?', answer: 6 },
+          { problem: '10 - 6 = ?', answer: 4 },
+          { problem: '10 - 5 = ?', answer: 5 }
+        ]
+      },
+      'plus_minus_1': {
+        name: '+1/-1 Facts',
+        description: 'Adding and subtracting 1',
+        facts: [
+          { problem: '1 + 1 = ?', answer: 2 },
+          { problem: '2 + 1 = ?', answer: 3 },
+          { problem: '1 + 2 = ?', answer: 3 },
+          { problem: '3 + 1 = ?', answer: 4 },
+          { problem: '1 + 3 = ?', answer: 4 },
+          { problem: '6 + 1 = ?', answer: 7 },
+          { problem: '1 + 6 = ?', answer: 7 },
+          { problem: '7 + 1 = ?', answer: 8 },
+          { problem: '1 + 7 = ?', answer: 8 },
+          { problem: '8 + 1 = ?', answer: 9 },
+          { problem: '1 + 8 = ?', answer: 9 },
+          { problem: '9 - 1 = ?', answer: 8 },
+          { problem: '8 - 1 = ?', answer: 7 },
+          { problem: '7 - 1 = ?', answer: 6 },
+          { problem: '4 - 1 = ?', answer: 3 },
+          { problem: '3 - 1 = ?', answer: 2 },
+          { problem: '2 - 1 = ?', answer: 1 }
+        ]
+      },
+      'plus_minus_2': {
+        name: '+2/-2 Facts',
+        description: 'Adding and subtracting 2',
+        facts: [
+          { problem: '2 + 2 = ?', answer: 4 },
+          { problem: '4 + 2 = ?', answer: 6 },
+          { problem: '2 + 4 = ?', answer: 6 },
+          { problem: '6 + 2 = ?', answer: 8 },
+          { problem: '2 + 6 = ?', answer: 8 },
+          { problem: '7 + 2 = ?', answer: 9 },
+          { problem: '2 + 7 = ?', answer: 9 },
+          { problem: '8 + 2 = ?', answer: 10 },
+          { problem: '2 + 8 = ?', answer: 10 },
+          { problem: '9 - 2 = ?', answer: 7 },
+          { problem: '8 - 2 = ?', answer: 6 },
+          { problem: '6 - 2 = ?', answer: 4 },
+          { problem: '4 - 2 = ?', answer: 2 },
+          { problem: '3 - 2 = ?', answer: 1 },
+          { problem: '10 - 2 = ?', answer: 8 }
+        ]
+      },
+      'plus_minus_3': {
+        name: '+3/-3 Facts',
+        description: 'Adding and subtracting 3',
+        facts: [
+          { problem: '3 + 6 = ?', answer: 9 },
+          { problem: '4 + 3 = ?', answer: 7 },
+          { problem: '6 + 3 = ?', answer: 9 },
+          { problem: '3 + 4 = ?', answer: 7 },
+          { problem: '9 - 3 = ?', answer: 6 },
+          { problem: '7 - 3 = ?', answer: 4 },
+          { problem: '6 - 3 = ?', answer: 3 },
+          { problem: '4 - 3 = ?', answer: 1 }
+        ]
+      },
+      'doubles': {
+        name: 'Doubles',
+        description: 'Double numbers',
+        facts: [
+          { problem: '1 + 1 = ?', answer: 2 },
+          { problem: '2 + 2 = ?', answer: 4 },
+          { problem: '3 + 3 = ?', answer: 6 },
+          { problem: '4 + 4 = ?', answer: 8 },
+          { problem: '5 + 5 = ?', answer: 10 },
+          { problem: '6 + 6 = ?', answer: 12 },
+          { problem: '7 + 7 = ?', answer: 14 },
+          { problem: '8 + 8 = ?', answer: 16 },
+          { problem: '9 + 9 = ?', answer: 18 },
+          { problem: '10 + 10 = ?', answer: 20 },
+          { problem: '2 - 1 = ?', answer: 1 },
+          { problem: '4 - 2 = ?', answer: 2 },
+          { problem: '6 - 3 = ?', answer: 3 },
+          { problem: '8 - 4 = ?', answer: 4 },
+          { problem: '10 - 5 = ?', answer: 5 },
+          { problem: '12 - 6 = ?', answer: 6 },
+          { problem: '14 - 7 = ?', answer: 7 },
+          { problem: '16 - 8 = ?', answer: 8 },
+          { problem: '18 - 9 = ?', answer: 9 },
+          { problem: '20 - 10 = ?', answer: 10 }
+        ]
+      },
+      'mix_1': {
+        name: 'Mix 1',
+        description: 'Zero Facts, Partners of 5, +1/-1 Facts',
+        facts: [
+          { problem: '3 + 0 = ?', answer: 3 },
+          { problem: '0 + 7 = ?', answer: 7 },
+          { problem: '8 - 0 = ?', answer: 8 },
+          { problem: '6 - 6 = ?', answer: 0 },
+          { problem: '2 + 3 = ?', answer: 5 },
+          { problem: '4 + 1 = ?', answer: 5 },
+          { problem: '5 - 3 = ?', answer: 2 },
+          { problem: '5 - 1 = ?', answer: 4 },
+          { problem: '3 + 1 = ?', answer: 4 },
+          { problem: '7 + 1 = ?', answer: 8 },
+          { problem: '8 - 1 = ?', answer: 7 },
+          { problem: '4 - 1 = ?', answer: 3 }
+        ]
+      },
+      'mix_2': {
+        name: 'Mix 2',
+        description: 'Facts with 5, Partners of 10, +2/-2 Facts',
+        facts: [
+          { problem: '5 + 3 = ?', answer: 8 },
+          { problem: '2 + 5 = ?', answer: 7 },
+          { problem: '8 - 5 = ?', answer: 3 },
+          { problem: '9 - 4 = ?', answer: 5 },
+          { problem: '3 + 7 = ?', answer: 10 },
+          { problem: '6 + 4 = ?', answer: 10 },
+          { problem: '10 - 3 = ?', answer: 7 },
+          { problem: '10 - 6 = ?', answer: 4 },
+          { problem: '6 + 2 = ?', answer: 8 },
+          { problem: '7 + 2 = ?', answer: 9 },
+          { problem: '9 - 2 = ?', answer: 7 },
+          { problem: '6 - 2 = ?', answer: 4 }
+        ]
+      },
+      'mix_3': {
+        name: 'Mix 3',
+        description: '+1/-1, +2/-2, +3/-3 Facts',
+        facts: [
+          { problem: '2 + 1 = ?', answer: 3 },
+          { problem: '6 + 1 = ?', answer: 7 },
+          { problem: '7 - 1 = ?', answer: 6 },
+          { problem: '3 - 1 = ?', answer: 2 },
+          { problem: '4 + 2 = ?', answer: 6 },
+          { problem: '8 + 2 = ?', answer: 10 },
+          { problem: '8 - 2 = ?', answer: 6 },
+          { problem: '10 - 2 = ?', answer: 8 },
+          { problem: '4 + 3 = ?', answer: 7 },
+          { problem: '6 + 3 = ?', answer: 9 },
+          { problem: '7 - 3 = ?', answer: 4 },
+          { problem: '9 - 3 = ?', answer: 6 }
+        ]
+      },
+      'doubles_plus_1': {
+        name: 'Doubles +1',
+        description: 'Near doubles facts',
+        facts: [
+          { problem: '5 + 6 = ?', answer: 11 },
+          { problem: '6 + 7 = ?', answer: 13 },
+          { problem: '7 + 8 = ?', answer: 15 },
+          { problem: '8 + 9 = ?', answer: 17 },
+          { problem: '9 + 10 = ?', answer: 19 },
+          { problem: '11 - 5 = ?', answer: 6 },
+          { problem: '11 - 6 = ?', answer: 5 },
+          { problem: '13 - 6 = ?', answer: 7 },
+          { problem: '13 - 7 = ?', answer: 6 },
+          { problem: '15 - 7 = ?', answer: 8 },
+          { problem: '15 - 8 = ?', answer: 7 },
+          { problem: '17 - 8 = ?', answer: 9 },
+          { problem: '17 - 9 = ?', answer: 8 },
+          { problem: '19 - 9 = ?', answer: 10 },
+          { problem: '19 - 10 = ?', answer: 9 }
+        ]
+      },
+      'teens': {
+        name: 'Teens',
+        description: 'Adding to 10 to make teen numbers',
+        facts: [
+          { problem: '1 + 10 = ?', answer: 11 },
+          { problem: '2 + 10 = ?', answer: 12 },
+          { problem: '3 + 10 = ?', answer: 13 },
+          { problem: '4 + 10 = ?', answer: 14 },
+          { problem: '5 + 10 = ?', answer: 15 },
+          { problem: '6 + 10 = ?', answer: 16 },
+          { problem: '7 + 10 = ?', answer: 17 },
+          { problem: '8 + 10 = ?', answer: 18 },
+          { problem: '9 + 10 = ?', answer: 19 },
+          { problem: '11 - 10 = ?', answer: 1 },
+          { problem: '11 - 1 = ?', answer: 10 },
+          { problem: '12 - 2 = ?', answer: 10 },
+          { problem: '12 - 10 = ?', answer: 2 },
+          { problem: '13 - 10 = ?', answer: 3 },
+          { problem: '13 - 3 = ?', answer: 10 },
+          { problem: '14 - 4 = ?', answer: 10 },
+          { problem: '14 - 10 = ?', answer: 4 },
+          { problem: '15 - 5 = ?', answer: 10 },
+          { problem: '15 - 10 = ?', answer: 5 },
+          { problem: '16 - 6 = ?', answer: 10 },
+          { problem: '16 - 10 = ?', answer: 6 },
+          { problem: '17 - 7 = ?', answer: 10 },
+          { problem: '17 - 10 = ?', answer: 7 },
+          { problem: '18 - 8 = ?', answer: 10 },
+          { problem: '18 - 10 = ?', answer: 8 },
+          { problem: '19 - 9 = ?', answer: 10 },
+          { problem: '19 - 10 = ?', answer: 9 }
+        ]
+      },
+      'make_ten_add_on': {
+        name: 'Make Ten & Add On',
+        description: 'Making 10 and adding more',
+        facts: [
+          { problem: '9 + 3 = ?', answer: 12 },
+          { problem: '8 + 5 = ?', answer: 13 },
+          { problem: '9 + 4 = ?', answer: 13 },
+          { problem: '8 + 6 = ?', answer: 14 },
+          { problem: '9 + 5 = ?', answer: 14 },
+          { problem: '9 + 6 = ?', answer: 15 },
+          { problem: '9 + 7 = ?', answer: 16 },
+          { problem: '12 - 3 = ?', answer: 9 },
+          { problem: '12 - 9 = ?', answer: 3 },
+          { problem: '13 - 8 = ?', answer: 5 },
+          { problem: '13 - 5 = ?', answer: 8 },
+          { problem: '13 - 4 = ?', answer: 9 },
+          { problem: '13 - 9 = ?', answer: 4 },
+          { problem: '14 - 8 = ?', answer: 6 },
+          { problem: '14 - 6 = ?', answer: 8 },
+          { problem: '14 - 9 = ?', answer: 5 },
+          { problem: '14 - 5 = ?', answer: 9 },
+          { problem: '15 - 9 = ?', answer: 6 },
+          { problem: '15 - 6 = ?', answer: 9 },
+          { problem: '16 - 9 = ?', answer: 7 },
+          { problem: '16 - 7 = ?', answer: 9 }
+        ]
+      },
+      'teens_plus_1': {
+        name: 'Teens +1',
+        description: 'Teen numbers plus 1',
+        facts: [
+          { problem: '11 + 1 = ?', answer: 12 },
+          { problem: '12 + 1 = ?', answer: 13 },
+          { problem: '13 + 1 = ?', answer: 14 },
+          { problem: '14 + 1 = ?', answer: 15 },
+          { problem: '15 + 1 = ?', answer: 16 },
+          { problem: '16 + 1 = ?', answer: 17 },
+          { problem: '17 + 1 = ?', answer: 18 },
+          { problem: '18 + 1 = ?', answer: 19 },
+          { problem: '19 + 1 = ?', answer: 20 },
+          { problem: '12 - 1 = ?', answer: 11 },
+          { problem: '13 - 1 = ?', answer: 12 },
+          { problem: '14 - 1 = ?', answer: 13 },
+          { problem: '15 - 1 = ?', answer: 14 },
+          { problem: '16 - 1 = ?', answer: 15 },
+          { problem: '17 - 1 = ?', answer: 16 },
+          { problem: '18 - 1 = ?', answer: 17 },
+          { problem: '19 - 1 = ?', answer: 18 },
+          { problem: '20 - 1 = ?', answer: 19 }
+        ]
+      },
+      'teens_plus_2': {
+        name: 'Teens +2',
+        description: 'Teen numbers plus 2',
+        facts: [
+          { problem: '11 + 2 = ?', answer: 13 },
+          { problem: '12 + 2 = ?', answer: 14 },
+          { problem: '13 + 2 = ?', answer: 15 },
+          { problem: '14 + 2 = ?', answer: 16 },
+          { problem: '15 + 2 = ?', answer: 17 },
+          { problem: '16 + 2 = ?', answer: 18 },
+          { problem: '17 + 2 = ?', answer: 19 },
+          { problem: '18 + 2 = ?', answer: 20 },
+          { problem: '13 - 2 = ?', answer: 11 },
+          { problem: '14 - 2 = ?', answer: 12 },
+          { problem: '15 - 2 = ?', answer: 13 },
+          { problem: '16 - 2 = ?', answer: 14 },
+          { problem: '17 - 2 = ?', answer: 15 },
+          { problem: '18 - 2 = ?', answer: 16 },
+          { problem: '19 - 2 = ?', answer: 17 },
+          { problem: '20 - 2 = ?', answer: 18 }
+        ]
+      }
+    };
+
+    function getCategoryOrder() {
+      return [
+        ['zero_facts', mathFactsCategories.zero_facts],
+        ['partners_5', mathFactsCategories.partners_5],
+        ['facts_with_5', mathFactsCategories.facts_with_5],
+        ['plus_minus_1', mathFactsCategories.plus_minus_1],
+        ['partners_10', mathFactsCategories.partners_10],
+        ['plus_minus_2', mathFactsCategories.plus_minus_2],
+        ['plus_minus_3', mathFactsCategories.plus_minus_3],
+        ['mix_1', mathFactsCategories.mix_1],
+        ['doubles', mathFactsCategories.doubles],
+        ['mix_2', mathFactsCategories.mix_2],
+        ['doubles_plus_1', mathFactsCategories.doubles_plus_1],
+        ['teens', mathFactsCategories.teens],
+        ['make_ten_add_on', mathFactsCategories.make_ten_add_on],
+        ['mix_3', mathFactsCategories.mix_3],
+        ['teens_plus_1', mathFactsCategories.teens_plus_1],
+        ['teens_plus_2', mathFactsCategories.teens_plus_2]
+      ];
+    }
+
+    function initializeApp() {
+      loadData();
+      setupEventListeners();
+      createNumberPad();
+    }
+
+    function setupEventListeners() {
+      const nameInput = document.getElementById('studentNameInput');
+      const startBtn = document.getElementById('startBtn');
+      
+      nameInput.addEventListener('input', updateStartButton);
+      nameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !startBtn.disabled) {
+          createNewStudent();
+        }
+      });
+
+      startBtn.addEventListener('click', createNewStudent);
+      document.getElementById('selectStudentBtn').addEventListener('click', showStudentSelection);
+      document.getElementById('teacherDashboardBtn').addEventListener('click', showPasswordPrompt);
+      document.getElementById('backToWelcomeBtn').addEventListener('click', () => showScreen('welcomeScreen'));
+      document.getElementById('viewProgressBtn').addEventListener('click', showStudentProgress);
+      document.getElementById('practiceBtn').addEventListener('click', showPracticeMode);
+      document.getElementById('backFromPracticeBtn').addEventListener('click', () => showScreen('categoryScreen'));
+      document.getElementById('logoutBtn').addEventListener('click', logout);
+      document.getElementById('endGameBtn').addEventListener('click', endGame);
+      document.getElementById('backFromDashboardBtn').addEventListener('click', returnFromDashboard);
+      document.getElementById('exportDataBtn').addEventListener('click', exportData);
+      document.getElementById('importDataBtn').addEventListener('click', () => {
+        document.getElementById('importFileInput').click();
+      });
+      document.getElementById('importFileInput').addEventListener('change', importData);
+      document.getElementById('clearAllDataBtn').addEventListener('click', clearAllData);
+      document.getElementById('closeProgressModal').addEventListener('click', () => {
+        document.getElementById('progressModal').classList.remove('active');
+      });
+      document.getElementById('closeCategoryDetailModal').addEventListener('click', () => {
+        document.getElementById('categoryDetailModal').classList.remove('active');
+      });
+    }
+
+    function updateStartButton() {
+      const name = document.getElementById('studentNameInput').value.trim();
+      const startBtn = document.getElementById('startBtn');
+      const isDisabled = name.length === 0;
+      
+      startBtn.disabled = isDisabled;
+      startBtn.style.opacity = isDisabled ? '0.5' : '1';
+      startBtn.style.cursor = isDisabled ? 'not-allowed' : 'pointer';
+    }
+
+    function createNumberPad() {
+      const numberPad = document.getElementById('numberPad');
+      for (let i = 0; i <= 5; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'number-btn';
+        btn.textContent = i;
+        btn.addEventListener('click', () => submitAnswer(i));
+        numberPad.appendChild(btn);
+      }
+      for (let i = 6; i <= 10; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'number-btn';
+        btn.textContent = i;
+        btn.addEventListener('click', () => submitAnswer(i));
+        numberPad.appendChild(btn);
+      }
+    }
+
+    function createNewStudent() {
+      const name = document.getElementById('studentNameInput').value.trim();
+      if (!name) return;
+
+      const studentId = 'student_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      currentStudent = { id: studentId, name: name };
+      localStorage.setItem('currentStudentId', studentId);
+
+      showScreen('categoryScreen');
+      renderCategories();
+    }
+
+    function showStudentSelection() {
+      const students = getUniqueStudents();
+      const studentList = document.getElementById('studentList');
+      studentList.innerHTML = '';
+
+      if (students.length === 0) {
+        studentList.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1/-1;">No students found. Please create a new student first.</p>';
+      } else {
+        students.forEach(student => {
+          const studentData = allData.filter(d => d.student_id === student.id);
+          const card = document.createElement('div');
+          card.className = 'student-card';
+          
+          const sessionCount = new Set(studentData.map(r => r.session_id)).size;
+          const masteredFacts = new Set();
+          studentData.forEach(r => {
+            if (r.is_mastered) masteredFacts.add(r.fact_problem);
+          });
+          
+          card.innerHTML = `
+            <h3>${student.name}</h3>
+            <p>${sessionCount} session${sessionCount !== 1 ? 's' : ''}</p>
+            <p style="margin-top: 8px; font-size: 14px; color: #48bb78; font-weight: bold;">${masteredFacts.size} facts mastered</p>
+          `;
+          
+          card.addEventListener('click', () => selectStudent(student));
+          studentList.appendChild(card);
+        });
+      }
+
+      showScreen('studentSelectionScreen');
+    }
+
+    function selectStudent(student) {
+      currentStudent = student;
+      localStorage.setItem('currentStudentId', student.id);
+      showScreen('categoryScreen');
+      renderCategories();
+    }
+
+    function getUniqueStudents() {
+      const studentMap = new Map();
+      allData.forEach(record => {
+        if (!studentMap.has(record.student_id)) {
+          studentMap.set(record.student_id, {
+            id: record.student_id,
+            name: record.student_name
+          });
+        }
+      });
+      return Array.from(studentMap.values());
+    }
+
+    function renderCategories() {
+      const grid = document.getElementById('categoryGrid');
+      grid.innerHTML = '';
+
+      if (!currentStudent) return;
+
+      const studentRecords = allData.filter(d => d.student_id === currentStudent.id);
+      const categoryOrder = getCategoryOrder();
+
+      categoryOrder.forEach(([key, category], index) => {
+        const isUnlocked = isCategoryUnlocked(key, index, studentRecords);
+        const masteryStatus = getCategoryMasteryStatus(key, studentRecords);
+        
+        const teacherUnlock = allData.find(d => 
+          d.type === 'teacher_unlock' && 
+          d.student_id === currentStudent.id && 
+          d.fact_category === key
+        );
+        
+        const card = document.createElement('div');
+        card.className = 'category-card';
+        
+        if (!isUnlocked) {
+          card.style.opacity = '0.5';
+          card.style.cursor = 'not-allowed';
+          card.style.background = 'linear-gradient(135deg, #a0aec0 0%, #718096 100%)';
+        } else if (masteryStatus.isMastered) {
+          card.style.background = 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)';
+          card.style.border = '3px solid #ffd700';
+        } else if (teacherUnlock) {
+          card.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+          card.style.border = '3px solid #fbbf24';
+        }
+        
+        let statusIcon = '';
+        let statusText = '';
+        
+        if (!isUnlocked) {
+          statusIcon = '🔒';
+          statusText = 'Locked';
+        } else if (masteryStatus.isMastered) {
+          statusIcon = '⭐';
+          statusText = 'Mastered!';
+        } else if (teacherUnlock) {
+          statusIcon = '🔓';
+          statusText = 'Teacher Unlocked';
+        } else if (masteryStatus.masteredCount > 0) {
+          statusIcon = '📚';
+          statusText = `${masteryStatus.masteredCount}/${masteryStatus.totalFacts} mastered`;
+        } else {
+          statusIcon = '🎯';
+          statusText = 'Ready to start';
+        }
+        
+        card.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+            <h3 style="margin: 0; flex: 1;">${category.name}</h3>
+            <div style="font-size: 24px;">${statusIcon}</div>
+          </div>
+          <p style="margin: 8px 0;">${category.description}</p>
+          <p style="margin: 8px 0; font-size: 14px; opacity: 0.9;">${category.facts.length} facts</p>
+          <div style="margin-top: 12px; padding: 8px; background: rgba(255,255,255,0.2); border-radius: 6px; font-size: 14px; font-weight: bold;">
+            ${statusText}
+          </div>
+        `;
+        
+        if (isUnlocked) {
+          card.addEventListener('click', () => startGame(key));
+        } else {
+          card.addEventListener('click', () => showLockedMessage(key, index));
+        }
+        
+        grid.appendChild(card);
+      });
+    }
+
+    function showPracticeMode() {
+      if (!currentStudent) return;
+
+      const studentRecords = allData.filter(d => d.student_id === currentStudent.id);
+      const practiceFactsList = document.getElementById('practiceFactsList');
+      
+      const attemptedFacts = new Map();
+      const masteredFacts = new Set();
+      
+      studentRecords.forEach(record => {
+        attemptedFacts.set(record.fact_problem, true);
+        if (record.is_mastered) {
+          masteredFacts.add(record.fact_problem);
+        }
+      });
+
+      const practiceGroups = {};
+      Object.entries(mathFactsCategories).forEach(([categoryKey, category]) => {
+        const unmasteredFacts = category.facts.filter(fact => 
+          attemptedFacts.has(fact.problem) && !masteredFacts.has(fact.problem)
+        );
+        
+        if (unmasteredFacts.length > 0) {
+          practiceGroups[categoryKey] = {
+            name: category.name,
+            facts: unmasteredFacts
+          };
+        }
+      });
+
+      if (Object.keys(practiceGroups).length === 0) {
+        practiceFactsList.innerHTML = `
+          <div style="text-align: center; padding: 48px; color: #666;">
+            <div style="font-size: 48px; margin-bottom: 16px;">🎉</div>
+            <h3 style="color: #333; margin-bottom: 8px;">Great job!</h3>
+            <p>You haven't attempted any facts yet, or you've mastered everything you've tried!</p>
+            <p style="margin-top: 16px;">Try some new categories to unlock practice mode.</p>
+          </div>
+        `;
+      } else {
+        let html = '<div class="category-grid">';
+        
+        Object.entries(practiceGroups).forEach(([categoryKey, group]) => {
+          html += `
+            <div class="category-card" onclick="startPracticeSession('${categoryKey}')" style="cursor: pointer;">
+              <h3>${group.name}</h3>
+              <p>Practice unmastered facts</p>
+              <p style="margin-top: 12px; font-size: 16px; font-weight: bold;">${group.facts.length} facts to practice</p>
+            </div>
+          `;
+        });
+        
+        html += '</div>';
+        practiceFactsList.innerHTML = html;
+      }
+
+      showScreen('practiceModeScreen');
+    }
+
+    window.startPracticeSession = function(categoryKey) {
+      if (!currentStudent) return;
+
+      const studentRecords = allData.filter(d => d.student_id === currentStudent.id);
+      const masteredFacts = new Set();
+      const attemptedFacts = new Set();
+      
+      studentRecords.forEach(record => {
+        attemptedFacts.add(record.fact_problem);
+        if (record.is_mastered) {
+          masteredFacts.add(record.fact_problem);
+        }
+      });
+
+      const categoryFacts = mathFactsCategories[categoryKey].facts;
+      const unmasteredFacts = categoryFacts.filter(fact => 
+        attemptedFacts.has(fact.problem) && !masteredFacts.has(fact.problem)
+      );
+
+      if (unmasteredFacts.length === 0) return;
+
+      currentCategory = categoryKey;
+      currentFacts = [...unmasteredFacts];
+      isPracticeMode = true;
+      
+      currentFactIndex = 0;
+      correctCount = 0;
+      totalCount = 0;
+      sessionId = null;
+
+      shuffleArray(currentFacts);
+      showScreen('gameScreen');
+      showNextProblem();
+    };
+
+    function startGame(categoryKey) {
+      currentCategory = categoryKey;
+      currentFacts = [...mathFactsCategories[categoryKey].facts];
+      isPracticeMode = false;
+      
+      if (currentFacts.length === 0) return;
+
+      currentFactIndex = 0;
+      correctCount = 0;
+      totalCount = 0;
+      sessionId = 'session_' + Date.now();
+
+      shuffleArray(currentFacts);
+      showScreen('gameScreen');
+      showNextProblem();
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function showNextProblem() {
+      if (currentFactIndex >= currentFacts.length) {
+        endGame();
+        return;
+      }
+
+      const fact = currentFacts[currentFactIndex];
+      document.getElementById('problemDisplay').textContent = fact.problem;
+      
+      if (isPracticeMode) {
+        document.getElementById('scoreDisplay').textContent = `Practice: ${correctCount}/${totalCount}`;
+      } else {
+        document.getElementById('scoreDisplay').textContent = `${correctCount}/${totalCount}`;
+      }
+      
+      renderVisualAid(fact);
+      questionStartTime = Date.now();
+    }
+
+    function renderVisualAid(fact) {
+      const visualAid = document.getElementById('visualAid');
+      visualAid.innerHTML = '';
+
+      const numbers = fact.problem.match(/\d+/g).map(Number);
+      const operator = fact.problem.includes('+') ? '+' : '-';
+
+      const allCircles = document.createElement('div');
+      allCircles.style.display = 'flex';
+      allCircles.style.gap = '4px';
+      allCircles.style.justifyContent = 'center';
+      allCircles.style.flexWrap = 'wrap';
+      
+      if (operator === '+') {
+        for (let i = 0; i < numbers[0]; i++) {
+          const circle = document.createElement('div');
+          circle.className = 'circle';
+          circle.style.background = '#48bb78';
+          circle.style.borderColor = '#38a169';
+          allCircles.appendChild(circle);
+        }
+        for (let i = 0; i < numbers[1]; i++) {
+          const circle = document.createElement('div');
+          circle.className = 'circle';
+          circle.style.background = '#f56565';
+          circle.style.borderColor = '#e53e3e';
+          allCircles.appendChild(circle);
+        }
+      } else {
+        for (let i = 0; i < numbers[0]; i++) {
+          const circle = document.createElement('div');
+          circle.className = 'circle';
+          allCircles.appendChild(circle);
+        }
+      }
+      
+      visualAid.appendChild(allCircles);
+    }
+
+    function submitAnswer(answer) {
+      const fact = currentFacts[currentFactIndex];
+      const responseTime = Date.now() - questionStartTime;
+      const isCorrect = answer === fact.answer;
+      const isMastered = isCorrect && responseTime <= MASTERY_TIME_THRESHOLD;
+
+      totalCount++;
+      if (isCorrect) correctCount++;
+
+      showFeedback(isCorrect);
+
+      if (!isPracticeMode && sessionId) {
+        const record = {
+          id: 'record_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+          type: 'attempt',
+          student_id: currentStudent.id,
+          student_name: currentStudent.name,
+          fact_category: currentCategory,
+          fact_problem: fact.problem,
+          fact_answer: fact.answer,
+          is_correct: isCorrect,
+          response_time_ms: responseTime,
+          is_mastered: isMastered,
+          timestamp: new Date().toISOString(),
+          session_id: sessionId
+        };
+
+        allData.push(record);
+        saveData();
+      }
+
+      setTimeout(() => {
+        currentFactIndex++;
+        showNextProblem();
+      }, 1500);
+    }
+
+    function showFeedback(isCorrect) {
+      const feedback = document.getElementById('feedback');
+      feedback.textContent = isCorrect ? '✓' : '✗';
+      feedback.className = 'feedback show ' + (isCorrect ? 'correct' : 'incorrect');
+      
+      setTimeout(() => {
+        feedback.classList.remove('show');
+      }, 1200);
+    }
+
+    function endGame() {
+      showCelebrationPopup();
+    }
+
+    function showCelebrationPopup() {
+      if (!currentStudent) {
+        showScreen('categoryScreen');
+        return;
+      }
+
+      if (isPracticeMode) {
+        const practiceModal = document.createElement('div');
+        practiceModal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; display: flex; justify-content: center; align-items: center; padding: 20px;';
+
+        const practiceContent = document.createElement('div');
+        practiceContent.style.cssText = 'background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; border-radius: 20px; padding: 40px; text-align: center; max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);';
+
+        practiceContent.innerHTML = `
+          <div style="font-size: 60px; margin-bottom: 20px;">🎯</div>
+          <h2 style="margin: 0 0 20px 0; font-size: 24px;">Great Practice, ${currentStudent.name}!</h2>
+          <div style="background: rgba(255,255,255,0.2); border-radius: 12px; padding: 20px; margin: 24px 0;">
+            <div style="font-size: 36px; font-weight: bold; margin-bottom: 8px;">${correctCount}/${totalCount}</div>
+            <div style="font-size: 16px; opacity: 0.9;">Correct in Practice</div>
+          </div>
+          <p style="margin: 16px 0; opacity: 0.9;">Keep practicing to improve your skills!</p>
+          <button class="btn" id="continuePracticeBtn" style="background: white; color: #48bb78; font-size: 18px; padding: 16px 32px; margin-top: 20px; font-weight: bold;">Continue</button>
+        `;
+
+        practiceModal.appendChild(practiceContent);
+        document.body.appendChild(practiceModal);
+
+        document.getElementById('continuePracticeBtn').addEventListener('click', () => {
+          document.body.removeChild(practiceModal);
+          showScreen('categoryScreen');
+        });
+        return;
+      }
+
+      if (!sessionId) {
+        showScreen('categoryScreen');
+        return;
+      }
+
+      const sessionRecords = allData.filter(d => 
+        d.student_id === currentStudent.id && 
+        d.session_id === sessionId && 
+        d.is_mastered
+      );
+      
+      const newlyMasteredFacts = new Set();
+      sessionRecords.forEach(record => {
+        newlyMasteredFacts.add(record.fact_problem);
+      });
+
+      const masteredCount = newlyMasteredFacts.size;
+      
+      const allStudentRecords = allData.filter(d => d.student_id === currentStudent.id);
+      const currentCategoryRecords = allStudentRecords.filter(r => r.fact_category === currentCategory);
+      const masteryStatus = getCategoryMasteryStatus(currentCategory, currentCategoryRecords);
+      
+      const categoryOrder = getCategoryOrder();
+      const currentCategoryIndex = categoryOrder.findIndex(([key]) => key === currentCategory);
+      const nextCategoryIndex = currentCategoryIndex + 1;
+      let newLevelUnlocked = false;
+      let nextLevelName = '';
+      
+      if (masteryStatus.isMastered && nextCategoryIndex < categoryOrder.length) {
+        const [nextCategoryKey, nextCategory] = categoryOrder[nextCategoryIndex];
+        if (isCategoryUnlocked(nextCategoryKey, nextCategoryIndex, allStudentRecords)) {
+          newLevelUnlocked = true;
+          nextLevelName = nextCategory.name;
+        }
+      }
+
+      const celebrationModal = document.createElement('div');
+      celebrationModal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; display: flex; justify-content: center; align-items: center; padding: 20px;';
+
+      const celebrationContent = document.createElement('div');
+      celebrationContent.style.cssText = 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 20px; padding: 40px; text-align: center; max-width: 500px; width: 100%; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: celebrationBounce 0.6s ease-out;';
+
+      let celebrationMessage = '';
+      let emoji = '';
+      
+      if (newLevelUnlocked) {
+        emoji = '🚀';
+        celebrationMessage = `LEVEL UP, ${currentStudent.name}!<br>You mastered <strong>${mathFactsCategories[currentCategory].name}</strong>!<br><span style="color: #ffd700;">🔓 ${nextLevelName} UNLOCKED!</span>`;
+      } else if (masteryStatus.isMastered) {
+        emoji = '🏆';
+        celebrationMessage = `LEVEL COMPLETE, ${currentStudent.name}!<br>You mastered <strong>${mathFactsCategories[currentCategory].name}</strong>!`;
+      } else if (masteredCount === 0) {
+        emoji = '💪';
+        celebrationMessage = `Great practice, ${currentStudent.name}!<br>Keep working hard - you're getting better!`;
+      } else if (masteredCount === 1) {
+        emoji = '⭐';
+        celebrationMessage = `Awesome, ${currentStudent.name}!<br>You mastered <strong>1 new fact</strong>!`;
+      } else if (masteredCount <= 3) {
+        emoji = '🌟';
+        celebrationMessage = `Fantastic, ${currentStudent.name}!<br>You mastered <strong>${masteredCount} new facts</strong>!`;
+      } else {
+        emoji = '🎉';
+        celebrationMessage = `Amazing work, ${currentStudent.name}!<br>You mastered <strong>${masteredCount} new facts</strong>!`;
+      }
+
+      let progressInfo = '';
+      if (masteryStatus.isMastered) {
+        progressInfo = `
+          <div style="background: rgba(255,215,0,0.2); border: 2px solid #ffd700; border-radius: 12px; padding: 20px; margin: 24px 0;">
+            <div style="font-size: 24px; margin-bottom: 8px;">⭐ LEVEL MASTERED! ⭐</div>
+            <div style="font-size: 16px; opacity: 0.9;">${masteryStatus.masteredCount}/${masteryStatus.totalFacts} facts completed</div>
+          </div>
+        `;
+      } else {
+        progressInfo = `
+          <div style="background: rgba(255,255,255,0.2); border-radius: 12px; padding: 20px; margin: 24px 0;">
+            <div style="font-size: 48px; font-weight: bold; margin-bottom: 8px;">${masteredCount}</div>
+            <div style="font-size: 16px; opacity: 0.9;">New Facts Mastered!</div>
+            <div style="font-size: 14px; opacity: 0.8; margin-top: 8px;">
+              Level Progress: ${masteryStatus.masteredCount}/${masteryStatus.totalFacts} 
+              (${Math.round((masteryStatus.masteredCount / masteryStatus.totalFacts) * 100)}%)
+            </div>
+          </div>
+        `;
+      }
+
+      celebrationContent.innerHTML = `
+        <div style="font-size: 80px; margin-bottom: 20px; animation: celebrationSpin 2s ease-in-out infinite;">${emoji}</div>
+        <h2 style="margin: 0 0 20px 0; font-size: 28px;">${celebrationMessage}</h2>
+        ${progressInfo}
+        <button class="btn" id="continueBtn" style="background: white; color: #667eea; font-size: 18px; padding: 16px 32px; margin-top: 20px; font-weight: bold;">Continue</button>
+      `;
+
+      celebrationModal.appendChild(celebrationContent);
+      document.body.appendChild(celebrationModal);
+
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes celebrationBounce {
+          0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+          50% { transform: scale(1.05) rotate(2deg); }
+          100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        @keyframes celebrationSpin {
+          0%, 100% { transform: rotate(0deg) scale(1); }
+          25% { transform: rotate(-5deg) scale(1.1); }
+          75% { transform: rotate(5deg) scale(1.1); }
+        }
+      `;
+      document.head.appendChild(style);
+
+      document.getElementById('continueBtn').addEventListener('click', () => {
+        document.body.removeChild(celebrationModal);
+        document.head.removeChild(style);
+        showScreen('categoryScreen');
+        renderCategories();
+      });
+    }
+
+    function logout() {
+      currentStudent = null;
+      localStorage.removeItem('currentStudentId');
+      document.getElementById('studentNameInput').value = '';
+      document.getElementById('startBtn').disabled = true;
+      showScreen('welcomeScreen');
+    }
+
+    function showStudentProgress() {
+      if (!currentStudent) return;
+
+      const studentRecords = allData.filter(d => d.student_id === currentStudent.id);
+      const progressContent = document.getElementById('progressContent');
+      
+      const stats = calculateStudentStats(studentRecords);
+      
+      progressContent.innerHTML = `
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Practice Sessions</div>
+            <div class="stat-value">${stats.totalSessions}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Facts Mastered</div>
+            <div class="stat-value">${stats.masteredCount}</div>
+          </div>
+        </div>
+        ${renderProgressByCategory(studentRecords)}
+      `;
+
+      document.getElementById('progressModal').classList.add('active');
+    }
+
+    function calculateStudentStats(records) {
+      const sessions = new Set(records.map(r => r.session_id));
+      const masteredFacts = new Set();
+      let correctCount = 0;
+
+      records.forEach(record => {
+        if (record.is_mastered) {
+          masteredFacts.add(record.fact_problem);
+        }
+        if (record.is_correct) correctCount++;
+      });
+
+      return {
+        totalSessions: sessions.size,
+        masteredCount: masteredFacts.size,
+        successRate: records.length > 0 ? Math.round((correctCount / records.length) * 100) : 0
+      };
+    }
+
+    function renderProgressByCategory(records) {
+      const categoryStats = {};
+      
+      Object.keys(mathFactsCategories).forEach(key => {
+        categoryStats[key] = {
+          name: mathFactsCategories[key].name,
+          mastered: new Set(),
+          progressing: new Set()
+        };
+      });
+
+      records.forEach(record => {
+        const category = record.fact_category;
+        if (categoryStats[category]) {
+          if (record.is_mastered) {
+            categoryStats[category].mastered.add(record.fact_problem);
+          } else {
+            categoryStats[category].progressing.add(record.fact_problem);
+          }
+        }
+      });
+
+      let html = '';
+      Object.entries(categoryStats).forEach(([key, stats]) => {
+        if (stats.mastered.size > 0 || stats.progressing.size > 0) {
+          html += `
+            <div class="progress-section">
+              <h3>${stats.name}</h3>
+              <div style="margin-bottom: 16px;">
+                <strong style="color: #48bb78;">Mastered (${stats.mastered.size}):</strong>
+                <div style="margin-top: 8px; color: #666;">
+                  ${stats.mastered.size > 0 ? Array.from(stats.mastered).join(', ') : 'None yet'}
+                </div>
+              </div>
+              <div>
+                <strong style="color: #667eea;">Progressing (${stats.progressing.size}):</strong>
+                <div style="margin-top: 8px; color: #666;">
+                  ${stats.progressing.size > 0 ? Array.from(stats.progressing).join(', ') : 'None'}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      });
+
+      return html || '<p style="text-align: center; color: #666;">No progress data yet. Start practicing!</p>';
+    }
+
+    function showPasswordPrompt() {
+      const password = prompt('Enter teacher password:');
+      console.log('Password entered:', password ? 'yes' : 'no');
+      
+      if (password === '4747') {
+        console.log('Correct password, showing dashboard');
+        showDashboard();
+      } else if (password !== null) {
+        alert('❌ Incorrect password. The password is: 4747');
+      }
+    }
+
+    function showDashboard() {
+      const students = getUniqueStudents();
+      const dashboardContent = document.getElementById('dashboardContent');
+
+      if (students.length === 0) {
+        dashboardContent.innerHTML = `
+          <div style="text-align: center; padding: 48px; background: #f7fafc; border-radius: 12px;">
+            <div style="font-size: 48px; margin-bottom: 16px;">📊</div>
+            <h3 style="color: #333; margin-bottom: 8px;">No Student Data Yet</h3>
+            <p style="color: #666;">Students will appear here once they start practicing!</p>
+          </div>
+        `;
+      } else {
+        dashboardContent.innerHTML = renderMasteryGrid(students);
+      }
+
+      showScreen('dashboardScreen');
+    }
+
+    function renderMasteryGrid(students) {
+      const trackingCategories = [
+        { key: 'zero_facts', name: 'Zero' },
+        { key: 'partners_5', name: 'Partners 5' },
+        { key: 'facts_with_5', name: 'Facts w/5' },
+        { key: 'partners_10', name: 'Partners 10' },
+        { key: 'plus_minus_1', name: '+1/-1' },
+        { key: 'plus_minus_2', name: '+2/-2' },
+        { key: 'plus_minus_3', name: '+3/-3' },
+        { key: 'mix_1', name: 'Mix 1' },
+        { key: 'doubles', name: 'Doubles' },
+        { key: 'mix_2', name: 'Mix 2' },
+        { key: 'doubles_plus_1', name: 'Dbl+1' },
+        { key: 'teens', name: 'Teens' },
+        { key: 'make_ten_add_on', name: 'Make 10' },
+        { key: 'mix_3', name: 'Mix 3' },
+        { key: 'teens_plus_1', name: 'Teens+1' },
+        { key: 'teens_plus_2', name: 'Teens+2' }
+      ];
+
+      let html = `
+        <div style="overflow-x: auto; margin-bottom: 32px;">
+          <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <thead>
+              <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <th style="padding: 16px; text-align: left; font-weight: bold; border-right: 1px solid rgba(255,255,255,0.2);">Student</th>
+      `;
+
+      trackingCategories.forEach(category => {
+        html += `<th style="padding: 16px; text-align: center; font-weight: bold; border-right: 1px solid rgba(255,255,255,0.2); min-width: 90px;">${category.name}</th>`;
+      });
+
+      html += '</tr></thead><tbody>';
+
+      students.forEach((student, index) => {
+        const studentRecords = allData.filter(d => d.student_id === student.id);
+        const rowBg = index % 2 === 0 ? '#f8fafc' : 'white';
+        
+        html += `
+          <tr style="background: ${rowBg}; border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 16px; font-weight: bold; color: #333; border-right: 1px solid #e2e8f0;">
+              <div style="display: flex; align-items: center; gap: 8px; justify-content: space-between;">
+                <span>${student.name}</span>
+                <button 
+                  class="btn btn-danger" 
+                  onclick="deleteStudent('${student.id}')"
+                  style="font-size: 10px; padding: 4px 8px; margin: 0;"
+                >Delete</button>
+              </div>
+            </td>
+        `;
+
+        trackingCategories.forEach(category => {
+          const categoryRecords = studentRecords.filter(r => r.fact_category === category.key);
+          const masteryStatus = getCategoryMasteryStatus(category.key, categoryRecords);
+          
+          const teacherUnlock = allData.find(d => 
+            d.type === 'teacher_unlock' && 
+            d.student_id === student.id && 
+            d.fact_category === category.key
+          );
+          
+          const statusIcon = masteryStatus.isMastered ? '✓' : (teacherUnlock ? '🔓' : '✗');
+          const statusColor = masteryStatus.isMastered ? '#48bb78' : (teacherUnlock ? '#f59e0b' : '#f56565');
+          const bgColor = masteryStatus.isMastered ? '#f0fff4' : (teacherUnlock ? '#fffbeb' : '#fef5e7');
+          
+          html += `
+            <td style="padding: 16px; text-align: center; border-right: 1px solid #e2e8f0;">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                <div 
+                  onclick="showCategoryDetail('${student.id}', '${category.key}')" 
+                  style="
+                    display: inline-flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    width: 40px; 
+                    height: 40px; 
+                    border-radius: 50%; 
+                    background: ${bgColor}; 
+                    color: ${statusColor}; 
+                    font-size: 20px; 
+                    font-weight: bold; 
+                    cursor: pointer; 
+                    border: 2px solid ${statusColor};
+                  "
+                  title="Click for details"
+                >
+                  ${statusIcon}
+                </div>
+                <div style="font-size: 12px; color: #666;">
+                  ${masteryStatus.masteredCount}/${masteryStatus.totalFacts}
+                </div>
+                ${teacherUnlock ? 
+                  `<button 
+                    class="btn btn-danger" 
+                    onclick="event.stopPropagation(); lockCategory('${student.id}', '${category.key}')"
+                    style="font-size: 10px; padding: 4px 8px; margin: 0;"
+                  >Lock</button>` :
+                  `<button 
+                    class="btn btn-secondary" 
+                    onclick="event.stopPropagation(); unlockCategory('${student.id}', '${category.key}')"
+                    style="font-size: 10px; padding: 4px 8px; margin: 0;"
+                  >Unlock</button>`
+                }
+              </div>
+            </td>
+          `;
+        });
+
+        html += '</tr>';
+      });
+
+      html += '</tbody></table></div>';
+      return html;
+    }
+
+    function getCategoryMasteryStatus(categoryKey, records) {
+      if (!mathFactsCategories[categoryKey]) {
+        return { isMastered: false, masteredCount: 0, totalFacts: 0 };
+      }
+
+      const totalFacts = mathFactsCategories[categoryKey].facts.length;
+      const masteredFacts = new Set();
+
+      records.forEach(record => {
+        if (record.is_mastered) {
+          masteredFacts.add(record.fact_problem);
+        }
+      });
+
+      const masteredCount = masteredFacts.size;
+      const masteryThreshold = Math.ceil(totalFacts * 0.8);
+      
+      return {
+        isMastered: masteredCount >= masteryThreshold,
+        masteredCount: masteredCount,
+        totalFacts: totalFacts
+      };
+    }
+
+    function isCategoryUnlocked(categoryKey, categoryIndex, studentRecords) {
+      if (categoryIndex === 0) return true;
+      
+      const studentId = studentRecords.length > 0 ? studentRecords[0].student_id : (currentStudent ? currentStudent.id : null);
+      
+      if (!studentId) return false;
+      
+      const teacherUnlock = allData.find(d => 
+        d.type === 'teacher_unlock' && 
+        d.student_id === studentId && 
+        d.fact_category === categoryKey
+      );
+      
+      if (teacherUnlock) return true;
+      
+      const categoryOrder = getCategoryOrder();
+      for (let i = 0; i < categoryIndex; i++) {
+        const [prevCategoryKey] = categoryOrder[i];
+        
+        // Check if this previous level was teacher-unlocked (treat as mastered)
+        const prevTeacherUnlock = allData.find(d => 
+          d.type === 'teacher_unlock' && 
+          d.student_id === studentId && 
+          d.fact_category === prevCategoryKey
+        );
+        
+        // If teacher unlocked it, treat it as mastered and skip to next check
+        if (prevTeacherUnlock) {
+          continue;
+        }
+        
+        // Otherwise, check if it's actually mastered through practice
+        const prevCategoryRecords = studentRecords.filter(r => r.fact_category === prevCategoryKey);
+        const masteryStatus = getCategoryMasteryStatus(prevCategoryKey, prevCategoryRecords);
+        
+        if (!masteryStatus.isMastered) {
+          return false;
+        }
+      }
+      
+      return true;
+    }
+
+    function showLockedMessage(categoryKey, categoryIndex) {
+      const categoryOrder = getCategoryOrder();
+      let nextToMaster = '';
+      
+      for (let i = 0; i < categoryIndex; i++) {
+        const [prevCategoryKey] = categoryOrder[i];
+        const studentRecords = allData.filter(d => d.student_id === currentStudent.id);
+        const prevCategoryRecords = studentRecords.filter(r => r.fact_category === prevCategoryKey);
+        const masteryStatus = getCategoryMasteryStatus(prevCategoryKey, prevCategoryRecords);
+        
+        if (!masteryStatus.isMastered) {
+          nextToMaster = mathFactsCategories[prevCategoryKey].name;
+          break;
+        }
+      }
+
+      alert(`🔒 This level is locked!\n\nYou need to master "${nextToMaster}" first.\n\nComplete 80% of the facts in each level to unlock the next one!`);
+    }
+
+    window.unlockCategory = function(studentId, categoryKey) {
+      const student = getUniqueStudents().find(s => s.id === studentId);
+      if (!student) return;
+
+      const unlockRecord = {
+        id: 'unlock_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+        type: 'teacher_unlock',
+        student_id: studentId,
+        student_name: student.name,
+        fact_category: categoryKey,
+        fact_problem: '',
+        fact_answer: 0,
+        is_correct: false,
+        response_time_ms: 0,
+        is_mastered: false,
+        timestamp: new Date().toISOString(),
+        session_id: 'teacher_unlock_' + Date.now()
+      };
+
+      allData.push(unlockRecord);
+      saveData();
+      showDashboard();
+    };
+
+    window.lockCategory = function(studentId, categoryKey) {
+      const unlockIndex = allData.findIndex(d => 
+        d.type === 'teacher_unlock' && 
+        d.student_id === studentId && 
+        d.fact_category === categoryKey
+      );
+
+      if (unlockIndex !== -1) {
+        allData.splice(unlockIndex, 1);
+        saveData();
+        showDashboard();
+      }
+    };
+
+    window.deleteStudent = function(studentId) {
+      const student = getUniqueStudents().find(s => s.id === studentId);
+      if (!student) return;
+
+      if (confirm(`Delete ${student.name} and ALL their progress?\n\nThis cannot be undone!`)) {
+        allData = allData.filter(d => d.student_id !== studentId);
+        saveData();
+
+        if (currentStudent && currentStudent.id === studentId) {
+          currentStudent = null;
+          localStorage.removeItem('currentStudentId');
+        }
+
+        showDashboard();
+      }
+    };
+
+    window.showCategoryDetail = function(studentId, categoryKey) {
+      const student = getUniqueStudents().find(s => s.id === studentId);
+      const category = mathFactsCategories[categoryKey];
+      
+      if (!student || !category) return;
+
+      const studentRecords = allData.filter(d => d.student_id === studentId && d.fact_category === categoryKey);
+      const masteredFacts = new Set();
+      
+      studentRecords.forEach(record => {
+        if (record.is_mastered) {
+          masteredFacts.add(record.fact_problem);
+        }
+      });
+
+      document.getElementById('categoryDetailTitle').textContent = `${student.name} - ${category.name}`;
+      
+      const content = document.getElementById('categoryDetailContent');
+      
+      let html = `
+        <div style="margin-bottom: 24px; text-align: center;">
+          <div style="display: inline-flex; gap: 24px; align-items: center; background: #f7fafc; padding: 16px; border-radius: 8px;">
+            <div style="text-align: center;">
+              <div style="font-size: 24px; font-weight: bold; color: #48bb78;">${masteredFacts.size}</div>
+              <div style="font-size: 14px; color: #666;">Mastered</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 24px; font-weight: bold; color: #f56565;">${category.facts.length - masteredFacts.size}</div>
+              <div style="font-size: 14px; color: #666;">Needs Practice</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 24px; font-weight: bold; color: #667eea;">${category.facts.length}</div>
+              <div style="font-size: 14px; color: #666;">Total Facts</div>
+            </div>
+          </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px;">
+      `;
+
+      category.facts.forEach(fact => {
+        const isMastered = masteredFacts.has(fact.problem);
+        const statusIcon = isMastered ? '✓' : '✗';
+        const statusColor = isMastered ? '#48bb78' : '#f56565';
+        const bgColor = isMastered ? '#f0fff4' : '#fef5e7';
+        const borderColor = isMastered ? '#48bb78' : '#f56565';
+        
+        html += `
+          <div style="background: ${bgColor}; border: 2px solid ${borderColor}; border-radius: 8px; padding: 16px; text-align: center;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">
+              <span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: ${statusColor}; color: white; font-size: 14px; font-weight: bold;">${statusIcon}</span>
+              <span style="font-weight: bold; color: #333;">${fact.problem.replace(' = ?', '')}</span>
+            </div>
+            <div style="color: #666; font-size: 14px;">= ${fact.answer}</div>
+          </div>
+        `;
+      });
+
+      html += '</div>';
+      content.innerHTML = html;
+
+      document.getElementById('categoryDetailModal').classList.add('active');
+    };
+
+    function clearAllData() {
+      if (confirm('Delete ALL student data?\n\nThis will erase all progress for all students.\nThis cannot be undone!')) {
+        allData = [];
+        saveData();
+        localStorage.removeItem('currentStudentId');
+        currentStudent = null;
+        alert('✅ All data cleared');
+        showScreen('welcomeScreen');
+      }
+    }
+
+    function returnFromDashboard() {
+      if (currentStudent) {
+        showScreen('categoryScreen');
+      } else {
+        showScreen('welcomeScreen');
+      }
+    }
+
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+      });
+      document.getElementById(screenId).classList.add('active');
+    }
+
+    // Initialize the app
+    initializeApp();
+  </script>
+</body>
+</html>
